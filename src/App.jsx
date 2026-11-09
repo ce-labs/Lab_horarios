@@ -118,20 +118,20 @@ export default function App() {
       {isAdmin && (
         <label className="upload">
           <input type="file" accept=".xlsx,.xls" onChange={onFile} />
-          <span>📄 {override ? `Cambiar archivo (actual: ${fileName})` : 'Probar otro Excel de horarios (.xlsx)'}</span>
+          <span> {override ? `Cambiar archivo (actual: ${fileName})` : 'Probar otro Excel de horarios (.xlsx)'}</span>
         </label>
       )}
       {error && <p className="error">{error}</p>}
 
       {todayOut && (
         <div className="closed">
-          🔒 Laboratorios cerrados por el momento
+           Laboratorios cerrados por el momento
           <small>{next ? `Próximo período: ${next.name}, inicia el ${fmtDate(next.start)}.` : 'Consulta las fechas con la escuela.'}</small>
         </div>
       )}
 
       <div className="notice" role="note">
-        ⚠️ <span><b>Los horarios pueden estar sujetos a cambios.</b> Esta página se basa únicamente en el horario de clases y
+         <span><b>Los horarios pueden estar sujetos a cambios.</b> Esta página se basa únicamente en el horario de clases y
         <b> no conoce las reservas</b> de laboratorios: un laboratorio “libre” podría estar reservado.</span>
       </div>
 
@@ -154,7 +154,7 @@ export default function App() {
       </div>
 
       {closed ? (
-        <div className="closed">🔒 Laboratorios cerrados este día<small>{closed}</small></div>
+        <div className="closed"> Laboratorios cerrados este día<small>{closed}</small></div>
       ) : !labs ? (
         !error && <p className="empty">Cargando horarios…</p>
       ) : (
@@ -187,7 +187,7 @@ export default function App() {
             </section>
           ) : (
             <div className="grid" style={{ '--cols': visible.length }}>
-              <div className="cell head hora">🕒 Hora</div>
+              <div className="cell head hora"> Hora</div>
               {visible.map((l, i) => (
                 <div key={l.id} className="cell head">
                   <b><span className="dot" style={{ background: LAB_COLORS[i % LAB_COLORS.length] }} />{l.id}</b>
@@ -209,7 +209,7 @@ export default function App() {
         <h2>¡Aprovecha nuestros laboratorios al máximo!</h2>
         <h3>Contáctanos para más información</h3>
         <p>Para más información, comunícate con la escuela.</p>
-        <p>{CONTACT.escuela}<br />Correo: {CONTACT.correo}<br />Redes: {CONTACT.redes}</p>
+        <p>{CONTACT.escuela} </p>
       </section>
     </div>
   )
@@ -224,7 +224,7 @@ function Logo() {
 
 function HeroImg() {
   const [ok, setOk] = useState(true)
-  return ok ? <img className="hero-img" src={BASE + 'header.jpg'} alt="Laboratorio de computadores" onError={() => setOk(false)} /> : null
+  return ok ? <img className="hero-img" src={BASE + 'header.jpeg'} alt="Laboratorio de computadores" onError={() => setOk(false)} /> : null
 }
 
 function Row({ s, labs, day, now }) {

@@ -1,103 +1,91 @@
-# 🖥️ Disponibilidad de Laboratorios – Ingeniería en Computadores (Lab_horarios)
+# 🖥️ Disponibilidad de Laboratorios – Ingeniería en Computadores
 
-Página web (React + Vite) que lee el Excel oficial de horarios y muestra a los estudiantes,
-en formato de agenda, qué laboratorios están **Libres** u **Ocupados** por clase.
-Es responsive: funciona en celular, tablet y computadora.
+Página web (React + Vite) que lee el Excel oficial de horarios y muestra a los estudiantes qué laboratorios están
+**Libres** u **Ocupados** por clase. Es responsive (celular, tablet y computadora).
 
 ## Qué muestra
 
-- Una columna por laboratorio y una fila por franja horaria (7:30 – 22:00).
-- **Libre** (verde) o **Ocupado** (rojo). Las celdas ocupadas muestran solo el **código del curso**
-  y el rango de horas, por ejemplo `CE1103 · 9:30 – 11:30` (el grupo no se muestra).
-- Selector de día (Lun–Vie; el sábado aparece solo si algún laboratorio tiene clases ese día).
-  Al abrir, selecciona el día de hoy (domingo muestra el lunes).
-- Resalta la franja horaria actual cuando se ve el día de hoy.
-- Interruptor **"Mostrar solo disponibles"**: oculta las franjas donde todos los labs están ocupados.
+- **Tabla por semana:** una columna por laboratorio y una fila por franja horaria. Las celdas ocupadas muestran solo
+  el **código del curso** y su rango de horas (ej. `CE1103 · 9:30 – 11:30`).
+- **Navegación por semanas** (Semana anterior / siguiente y botón "Hoy") dentro de todos los períodos configurados,
+  más selector de día.
+- **Disponibles ahora:** interruptor que oculta la tabla y muestra solo los laboratorios libres a la **hora del
+  dispositivo** en el **día elegido**, con la hora hasta la que siguen libres.
+- Aviso visible de que los horarios pueden cambiar y de que la página **no conoce las reservas** de laboratorios.
+- Encabezado con foto, y cierre con "¡Aprovecha nuestros laboratorios al máximo!" y datos de contacto.
 
-## Laboratorios públicos
+## Imágenes (carpeta `public/`)
 
-El Excel trae 5 laboratorios (F2-07, F2-08, F2-09, F2-10 y F4-02), pero solo 4 se muestran.
-Para cambiarlo edita `src/config.js`:
+| Archivo | Uso |
+|---|---|
+| `header.jpg` | Foto del encabezado (reemplázala por la tuya, mismo nombre). Si no existe, el espacio se oculta. |
+| `logo.png` | Logo (arriba a la izquierda). Si no existe, se muestra un logo `</>` por defecto. |
+
+## Configuración (`src/config.js`)
 
 ```js
-export const HIDDEN_LABS = ['F4-02']   // laboratorios que NO se muestran
+export const HIDDEN_LABS = ['F4-02']          // labs que NO se muestran al público
+export const PERIODS = [
+  { name: 'II Semestre 2026 (período lectivo)', start: '2026-08-03', end: '2026-11-21', file: 'horarios.xlsx' },
+  { name: 'Semanas sin clases', start: '2026-11-23', end: '2026-12-05', file: 'horarios.xlsx', allFree: true },
+]
+export const CLOSED_DATES = { '2026-09-15': 'Feriado: Día de la Independencia' }
+export const CONTACT = { escuela: '…', correo: '…', redes: '…' }
 ```
 
-Cuando F4-02 se habilite, basta con dejar la lista vacía: `[]`.
+- **Períodos:** la página carga el Excel que corresponde a la fecha elegida. `allFree: true` = sin clases, todos los
+  laboratorios aparecen libres. Para el verano, descomenta/agrega un período con su propio Excel (`public/verano.xlsx`).
+- Fuera de los períodos (o en `CLOSED_DATES`) el día se muestra como **cerrado**. Si hoy está fuera de todo período,
+  aparece "Laboratorios cerrados" con la fecha del próximo.
+- Con `?admin` al final de la dirección se ignoran las fechas y aparece un botón para **probar otro Excel** en tu
+  navegador (no cambia lo que ven los estudiantes).
+- ⚠️ Los datos de contacto y el feriado son de ejemplo: ajústalos.
 
-## Instalación y uso
+## Instalación
 
-Requiere [Node.js](https://nodejs.org) 18 o superior.
+Requiere [Node.js](https://nodejs.org) 18+.
 
 ```bash
 npm install
-npm run dev        # desarrollo en http://localhost:5173
-npm run build      # genera la carpeta dist/ lista para publicar
+npm run dev      # desarrollo: http://localhost:5173
+npm run build    # genera dist/ para publicar
 ```
 
-## Períodos (semestres y verano)
-
-Los laboratorios solo están abiertos en ciertas fechas. Se definen en `src/config.js`:
-
-```js
-export const PERIODS = [
-  { name: 'II Semestre 2026', start: '2026-08-10', end: '2026-12-12', file: 'horarios.xlsx' },
-  { name: 'Verano 2027',      start: '2027-01-11', end: '2027-03-06', file: 'verano.xlsx' },
-]
-export const CLOSED_DATES = { '2026-09-15': 'Feriado: Día de la Independencia' }
-```
-
-- La página carga automáticamente el Excel del período que incluye la fecha de hoy.
-- Fuera de todos los períodos muestra "Laboratorios cerrados" y la fecha en que inicia el siguiente.
-- Los días fuera del período (o en `CLOSED_DATES`) se muestran como cerrados.
-- Cada período puede tener su propio Excel: súbelo a `public/` con el nombre indicado en `file`.
-- Con `?admin` se ignoran las fechas, para poder probar cualquier Excel.
-
-## Cómo cargar los horarios
-
-**Opción A – Archivo fijo (recomendada para publicar).**
-Reemplaza el Excel del período en `public/` (ej. `horarios.xlsx` o `verano.xlsx`, mismo nombre) y vuelve a publicar.
-Todos los estudiantes verán ese horario automáticamente.
-
-**Opción B – Subirlo desde el navegador (vista de administrador).**
-Abre la página con `?admin` al final de la dirección (ej. `http://localhost:5173/?admin`) y
-usa el botón **"Subir Excel"**. Sirve para revisar cómo se verá un archivo antes de publicarlo.
-⚠️ Esto solo cambia lo que ves en *tu* navegador; los estudiantes siguen viendo `public/horarios.xlsx`.
+Publica el contenido de `dist/` en Netlify, Vercel, GitHub Pages o el servidor de la universidad.
+Para actualizar horarios: reemplaza el Excel en `public/` (mismo nombre) y vuelve a publicar.
 
 ## Formato esperado del Excel
 
-Una hoja por laboratorio, con esta estructura (igual al archivo actual):
+Una hoja por laboratorio:
 
-| Celda / zona | Contenido |
+| Zona | Contenido |
 |---|---|
-| `A2` | Nombre del lab, p. ej. `F2-07` o `F2-10 (Interactivo)` |
+| `A2` | Nombre del lab, ej. `F2-07` o `F2-10 (Interactivo)` |
 | `A4` | `Capacidad: 24 personas` (opcional) |
-| Fila de encabezado | `PER`, `HORA`, `LUNES (L)`, `MARTES (K)` … `SABADO (S)` |
+| Encabezado | `PER`, `HORA`, `LUNES (L)` … `SABADO (S)` |
 | Columna `HORA` | Rango como `7:30 - 8:30` |
-| Celdas de clase | Ej. `CE1103 G3` (se muestra solo `CE1103`) |
+| Celdas | Ej. `CE1103 G3` (se muestra solo `CE1103`); vacío = libre |
 
-Una celda vacía = laboratorio libre. Si el mismo curso ocupa franjas seguidas,
-se une en un solo rango (9:30–10:30 + 10:30–11:30 → `9:30 – 11:30`).
-Las hojas que no tengan la fila `PER` se ignoran.
+Períodos seguidos del mismo curso se unen en un solo rango.
 
-## Estructura del proyecto
+## Estructura
 
 ```
-public/horarios.xlsx   Excel cargado por defecto
-src/parser.js          Lee el Excel y calcula bloques ocupados
-src/config.js          Labs ocultos y colores
-src/App.jsx            Interfaz (selector de día, tabla, filtro)
-src/styles.css         Estilos y diseño responsive
+public/   horarios.xlsx, header.jpg, logo.png
+src/      parser.js (lee el Excel) · config.js · App.jsx · styles.css
 ```
-
-## Publicar
-
-Sube la carpeta `dist/` (después de `npm run build`) a cualquier hosting estático:
-Netlify, Vercel, GitHub Pages, o el servidor web de la universidad.
-Como usa `base: './'`, funciona también dentro de subcarpetas.
 
 ## Notas
 
 - Todo se procesa en el navegador; no hay servidor ni base de datos.
-- La hora que se usa para resaltar "ahora" es la del dispositivo del estudiante.
-- No incluye reservas ni feriados/cambios puntuales: refleja únicamente el horario del Excel.
+- "Ahora" usa la hora del dispositivo del estudiante.
+- La página refleja solo el horario del Excel: no incluye reservas ni cambios puntuales.
+
+## Publicar en GitHub Pages
+
+1. Crea un repositorio en GitHub y sube el proyecto (rama `main`).
+2. En el repo: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+3. Cada `git push` a `main` ejecuta `.github/workflows/deploy.yml`, que compila y publica la página.
+4. La dirección queda como `https://TU-USUARIO.github.io/NOMBRE-DEL-REPO/`.
+
+Para cambiar el horario: reemplaza `public/horarios.xlsx` (puedes hacerlo desde la web de GitHub con *Add file → Upload files*) y haz commit; se republica solo.
