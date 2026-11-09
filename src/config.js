@@ -20,8 +20,6 @@ export const CLOSED_DATES = {
 // Datos de contacto que aparecen al final de la página
 export const CONTACT = {
   escuela: 'Escuela de Ingeniería en Computadores',
-  correo: 'hello@reallygreatsite.com',
-  redes: '@reallygreatsite',
 }
 
 export const iso = (d) =>
